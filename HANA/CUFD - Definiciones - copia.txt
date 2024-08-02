@@ -1,0 +1,5 @@
+TableName	FieldID	Name	Type	Size	Description	SubType	LinkedTable	DefaultValue	EditSize	Mandatory	LinkedUDO	Resultados
+TableID	FieldID	AliasID	TypeID	SizeID	Descr	EditType	RTable	Dflt	EditSize	NotNull	RelUDO	Resultados
+WOR1	21	EXC_FProgam	db_Date		Fecha Programada					tNO		
+WOR1	22	EXC_HoraIni	db_Date		Hora Inicio	st_Time				tNO		
+WOR1	23	EXC_HoraFin	db_Date		Hora Fin	st_Time				tNO		

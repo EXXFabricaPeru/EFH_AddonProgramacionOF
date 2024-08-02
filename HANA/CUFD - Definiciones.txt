@@ -1,0 +1,26 @@
+TableName	FieldID	Name	Type	Size	Description	SubType	LinkedTable	DefaultValue	EditSize	Mandatory	LinkedUDO	Resultados
+TableID	FieldID	AliasID	TypeID	SizeID	Descr	EditType	RTable	Dflt	EditSize	NotNull	RelUDO	Resultados
+@EXX_PROGOF	0	DOCENTRY	db_Numeric	11	DocEntry		 		11	tNO		
+@EXX_PROGOF	1	STAGEID	db_Numeric	11	Stage ID				11	tNO		
+@EXX_PROGOF	2	CARDCODE	db_Alpha	15	CardCode				15	tNO		
+@EXX_PROGOF	3	CARDNAME	db_Alpha	100	CardName				100	tNO		
+@EXX_PROGOF	4	ITEMCODE	db_Alpha	50	ItemCode				50	tNO		
+@EXX_PROGOF	5	ITEMNAME	db_Alpha	100	ItemName				100	tNO		
+@EXX_PROGOF	6	UOM	db_Alpha	100	UoM				100	tNO		
+@EXX_PROGOF	7	WORQTY	db_Float		Work Quantity	st_Quantity				tNO		
+@EXX_PROGOF	8	RESCODE	db_Alpha	50	Resource Code				50	tNO		
+@EXX_PROGOF	9	RESNAME	db_Alpha	100	Resource Name				100	tNO		
+@EXX_PROGOF	10	REQTIME	db_Date		Required Time	st_Time				tNO		
+@EXX_PROGOF	11	STARTDATE	db_Date		Start Date					tNO		
+@EXX_PROGOF	12	FINISHDATE	db_Date		Finish Date					tNO		
+@EXX_PROGOF	13	STARTTIME	db_Date		Start Time	st_Time				tNO		
+@EXX_PROGOF	14	FINISHTIME	db_Date		Finish Time	st_Time				tNO		
+@EXX_PROGOF	15	SHIPDATE	db_Date		Ship Date					tNO		
+@EXX_PROGOF	16	PROGTIME	db_Date		PROGTIME	st_Time				tNO		
+@EXX_PROGOF	17	PROGCODE	db_Alpha	50	PROGCODE				50	tNO		
+@EXX_PROGOF	18	VISORDER	db_Numeric	11	Vis Order		 		11	tNO		
+@EXX_PROGOF	19	CHECK	db_Alpha	1	CHECK		 		1	tNO		
+WOR1	20	EXC_Programado	db_Alpha	1	Programado				1	tNO		
+WOR1	21	EXC_FProgam	db_Date		Fecha Programada					tNO		
+WOR1	22	EXC_HoraIni	db_Date		Hora Inicio	st_Time				tNO		
+WOR1	23	EXC_HoraFin	db_Date		Hora Fin	st_Time				tNO		

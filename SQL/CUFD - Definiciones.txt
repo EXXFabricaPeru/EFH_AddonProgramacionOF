@@ -1,0 +1,18 @@
+TableName	FieldID	Name	Type	Size	Description	SubType	LinkedTable	DefaultValue	EditSize	Mandatory	LinkedUDO	Resultados
+TableID	FieldID	AliasID	TypeID	SizeID	Descr	EditType	RTable	Dflt	EditSize	NotNull	RelUDO	Resultados
+@EXX_PROGOF	0	DOCENTRY	db_Numeric	11	DocEntry				11	tNO		
+@EXX_PROGOF	1	STAGEID	db_Numeric	11	Stage ID				11	tNO		
+@EXX_PROGOF	2	RESCODE	db_Alpha	50	Resource Code				50	tNO		
+@EXX_PROGOF	3	RESNAME	db_Alpha	100	Resource Name				100	tNO		
+@EXX_PROGOF	4	REQTIME	db_Date		Required Time	st_Time				tNO		
+@EXX_PROGOF	5	STARTDATE	db_Date		Start Date					tNO		
+@EXX_PROGOF	6	FINISHDATE	db_Date		Finish Date					tNO		
+@EXX_PROGOF	7	STARTTIME	db_Date		Start Time	st_Time				tNO		
+@EXX_PROGOF	8	FINISHTIME	db_Date		Finish Time	st_Time				tNO		
+@EXX_PROGOF	9	SHIPDATE	db_Date		Ship Date					tNO		
+@EXX_PROGOF	10	CARDCODE	db_Alpha	15	CardCode				15	tNO		
+@EXX_PROGOF	11	CARDNAME	db_Alpha	100	CardName				100	tNO		
+@EXX_PROGOF	12	ITEMCODE	db_Alpha	50	ItemCode				50	tNO		
+@EXX_PROGOF	13	ITEMNAME	db_Alpha	100	ItemName				100	tNO		
+@EXX_PROGOF	14	UOM	db_Alpha	100	UoM				100	tNO		
+@EXX_PROGOF	15	WORQTY	db_Float		Work Quantity	st_Quantity				tNO		

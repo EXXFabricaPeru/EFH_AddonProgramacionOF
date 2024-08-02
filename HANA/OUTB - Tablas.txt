@@ -1,0 +1,3 @@
+TableName	TableDescription	TableType
+TableName	Descr	ObjectType
+EXX_PROGOF	EXX - Programación OF	bott_NoObject	
