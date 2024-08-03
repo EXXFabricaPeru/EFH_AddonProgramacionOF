@@ -69,6 +69,7 @@ namespace Reportes.Events.ItemEvent
                         break;
                     case BoEventTypes.et_FORM_CLOSE:
                         break;
+                    
                 }
             }
             catch (Exception ex)
@@ -2420,15 +2421,22 @@ namespace Reportes.Events.ItemEvent
                 int orden = Convert.ToInt32(oMatOrdenes.Columns.Item("Col_2").Cells.Item(fila).Specific.Value);
                 string recurso = oMatOrdenes.Columns.Item("Col_1").Cells.Item(fila).Specific.Value;
                 int etapa = Convert.ToInt32(oMatOrdenes.Columns.Item("StageId").Cells.Item(fila).Specific.Value);
-
+                string programadoSel = oMatOrdenes.Columns.Item("Scheduled").Cells.Item(fila).Specific.Value;
 
                 Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().Seleccionado = oCheck.Checked;
-                int ordenSeleccion = oCheck.Checked ? Programador.OrdenesFabricacion.Where(x => x.Seleccionado).ToList().Count : 0;
+
+                //int ordenSeleccion = oCheck.Checked ? Programador.OrdenesFabricacion.Where(x => x.Seleccionado).ToList().Count : 0;
+
+                int programados = Programador.OrdenesFabricacion.Count(x=>x.Programado);
+                int list = Programador.OrdenesFabricacion.Where(x => x.Seleccionado && x.Programado==false).ToList().Count;
+                int ordenSeleccion = oCheck.Checked ? list +programados : 0;
+
                 Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
 
                 if (oCheck.Checked)
                 {
-                    oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
+                    if (programadoSel == "N")
+                        oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
                     oMatOrdenes.SelectRow(fila, true, true);
                 }
                 else
@@ -2444,7 +2452,10 @@ namespace Reportes.Events.ItemEvent
 
                     int ordenDesmarcado = Convert.ToInt32(oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value);
                     ActualizarOrden(ref oMatOrdenes, ordenDesmarcado);
-                    oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
+
+                    if (programadoSel == "N")
+                        oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
+
                     oMatOrdenes.SelectRow(fila, false, true);
                 }
 
@@ -2504,7 +2515,8 @@ namespace Reportes.Events.ItemEvent
 
             foreach (OrdenFabricacion orden in ordenesSeleccionadas)
             {
-                oMatOrdenes.Columns.Item("SelOrder").Cells.Item(orden.IndiceEnMatrix).Specific.Value = orden.OrdenMarcacion.ToString();
+                if (!orden.Programado)
+                    oMatOrdenes.Columns.Item("SelOrder").Cells.Item(orden.IndiceEnMatrix).Specific.Value = orden.OrdenMarcacion.ToString();
             }
 
             oMatOrdenes.AutoResizeColumns();

@@ -47,7 +47,7 @@ namespace Reportes
             try
             {
                 SAPbouiCOM.SboGuiApi SboGuiApi = new SAPbouiCOM.SboGuiApi();
-                string sConnectionString = Convert.ToString(Environment.GetCommandLineArgs().GetValue(1));
+                string sConnectionString = "0030002C0030002C00530041005000420044005F00440061007400650076002C0050004C006F006D0056004900490056";// Convert.ToString(Environment.GetCommandLineArgs().GetValue(1));
                 SboGuiApi.Connect(sConnectionString);
                 ClsMain.oApplication = SboGuiApi.GetApplication();
             }
