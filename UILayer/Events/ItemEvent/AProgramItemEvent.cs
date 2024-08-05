@@ -2432,7 +2432,7 @@ namespace Reportes.Events.ItemEvent
                 int ordenSeleccion = oCheck.Checked ? list +programados : 0;
 
                 Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
-
+                //actualización
                 if (oCheck.Checked)
                 {
                     if (programadoSel == "N")
