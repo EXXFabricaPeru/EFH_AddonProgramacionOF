@@ -130,9 +130,10 @@ namespace Reportes.Events.ItemEvent
                             List<OrdenFabricacion> list =  Programador.OrdenesFabricacion;
                             var mc = new AProgramItemEvent();
                             mc.oForm = oFormPadre;
+                            oForm.Close();
+
                             mc.FillMaquina(NewMaquinaCode, NewMaquinaDesc, list);
 
-                            oForm.Close();
                         }
                         break;
                     case "2":

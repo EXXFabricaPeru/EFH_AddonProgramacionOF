@@ -108,6 +108,8 @@ namespace Reportes.Entidades
                        }
                         );
                     }
+
+
                     ProgramarEntreFechasProgramadas(fechaInicio, noLineaRP);
                 }
             }
@@ -222,6 +224,7 @@ namespace Reportes.Entidades
         {
             // Periodos de Fechas Programadas
             List<OrdenFabricacion> ordenesProgramadas = OrdenesFabricacion.Where(x => x.Programado).ToList();
+            
             DateTime fechaMinimaProgramada = OrdenesFabricacion.Min(x => x.DtFechaInicio);
             TimePeriodCollection periodos = new TimePeriodCollection();
 
