@@ -357,6 +357,9 @@ namespace Reportes.Events.ItemEvent
                     case "Item_5":
                         cflRecurso(ref pVal);
                         break;
+                    case "Item_13":
+                        cflSocio(ref pVal);
+                        break;
                 }
             }
         }
@@ -376,6 +379,26 @@ namespace Reportes.Events.ItemEvent
                     {
                         oForm.DataSources.UserDataSources.Item("UD_RECCOD").Value = dtSelect.GetValue("ResCode", 0).ToString();
                         oForm.DataSources.UserDataSources.Item("UD_RECNO").Value = dtSelect.GetValue("ResName", 0).ToString();
+                    }
+                }
+            }
+            catch (Exception ex) { }
+        }
+
+        private void cflSocio(ref SAPbouiCOM.ItemEvent pVal)
+        {
+            SAPbouiCOM.DataTable dtSelect = null;
+            try
+            {
+                IChooseFromListEvent oCFLEvento = (IChooseFromListEvent)pVal;
+
+                if (!oCFLEvento.Before_Action && oCFLEvento.ChooseFromListUID == "CFL_1")
+                {
+                    dtSelect = oCFLEvento.SelectedObjects;
+
+                    if (dtSelect != null)
+                    {
+                        oForm.DataSources.UserDataSources.Item("UD_RAZSOC").Value = dtSelect.GetValue("CardCode", 0).ToString();
                     }
                 }
             }
@@ -2190,9 +2213,10 @@ namespace Reportes.Events.ItemEvent
                                 {
                                     oMatOrdenes.Columns.Item("check").Cells.Item(seleccionado.Key).Specific.Checked = true;
                                     oMatOrdenes.Columns.Item("Scheduled").Cells.Item(seleccionado.Key).Specific.Select("Y", BoSearchKey.psk_ByValue);
-                                    if (disminuir && seleccionado.Value < ubicacionNueva) continue;
-                                    if (!disminuir && seleccionado.Value > ubicacionNueva) continue;
+                                    //if (disminuir && seleccionado.Value < ubicacionNueva) continue;
+                                    //if (!disminuir && seleccionado.Value > ubicacionNueva) continue;
                                     AccionClickEnCheck(seleccionado.Key);
+
                                 }
                                 Reprogramador(ref oMatOrdenes);
                             }

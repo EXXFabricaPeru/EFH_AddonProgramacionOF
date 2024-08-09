@@ -156,9 +156,6 @@
     <None Include="Resources\UP.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Forms\frmProgram.srf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Forms\frmProgRec.srf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -169,6 +166,7 @@
     <Content Include="Forms\frmCambio.srf" />
     <Content Include="Forms\frmImpresion.srf" />
     <Content Include="Forms\frmMaqxKg.srf" />
+    <Content Include="Forms\frmProgram.srf" />
     <Content Include="Resources\SAPdata.dll" />
   </ItemGroup>
   <ItemGroup>
