@@ -71,13 +71,134 @@ namespace Reportes.Events.ItemEvent
                         break;
                     case BoEventTypes.et_FORM_CLOSE:
                         break;
-                    
+
+
                 }
             }
             catch (Exception ex)
             {
                 logger.Error("ItemEventAction", ex);
             }
+        }
+
+        private void ValidateChecks(ref SAPbouiCOM.ItemEvent pVal)
+        {
+            try
+            {
+                oForm.Freeze(true);
+
+                Matrix oMatOrdenes = oForm.Items.Item("matOrders").Specific;
+                var y = Programador.OrdenesFabricacion;
+
+                foreach (var item in Programador.OrdenesFabricacion)
+                {
+                    if (!item.Programado)
+                    {
+                        Programador.OrdenesFabricacion.Where(x => x.IndiceEnMatrix == item.IndiceEnMatrix).FirstOrDefault().OrdenMarcacion = 0;
+                    }
+
+
+                }
+
+
+
+                for (int i = 1; i <= oMatOrdenes.RowCount; i++)
+                {
+                    string programadoSel = oMatOrdenes.Columns.Item("Scheduled").Cells.Item(i).Specific.Value;
+                    CheckBox oCheck = oMatOrdenes.Columns.Item("check").Cells.Item(i).Specific;
+                    EditText order = oMatOrdenes.Columns.Item("SelOrder").Cells.Item(i).Specific;
+                    if (oCheck.Checked && programadoSel == "N")
+                    {
+                        order.Value = "0";
+                        Programador.OrdenesFabricacion.Where(x => x.IndiceEnMatrix == i).FirstOrDefault().Seleccionado = true;
+                    }
+
+                }
+                int cont = 1;
+                for (int i = 1; i <= oMatOrdenes.RowCount; i++)
+                {
+                    string programadoSel = oMatOrdenes.Columns.Item("Scheduled").Cells.Item(i).Specific.Value;
+                    CheckBox oCheck = oMatOrdenes.Columns.Item("check").Cells.Item(i).Specific;
+                    string order = oMatOrdenes.Columns.Item("SelOrder").Cells.Item(i).Specific.Value;
+                    if (oCheck.Checked && programadoSel == "N" && order == "0")
+                    //AccionClickEnCheck2(i);
+                    {
+                        try
+                        {
+
+                            //Matrix oMatOrdenes = oForm.Items.Item("matOrders").Specific;
+                            //CheckBox oCheck = oMatOrdenes.Columns.Item("check").Cells.Item(fila).Specific;
+
+                            int orden = Convert.ToInt32(oMatOrdenes.Columns.Item("Col_2").Cells.Item(i).Specific.Value);
+                            string recurso = oMatOrdenes.Columns.Item("Col_1").Cells.Item(i).Specific.Value;
+                            int etapa = Convert.ToInt32(oMatOrdenes.Columns.Item("StageId").Cells.Item(i).Specific.Value);
+                            //string programadoSel = oMatOrdenes.Columns.Item("Scheduled").Cells.Item(fila).Specific.Value;
+
+                            Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().Seleccionado = oCheck.Checked;
+
+                            //int ordenSeleccion = oCheck.Checked ? Programador.OrdenesFabricacion.Where(x => x.Seleccionado).ToList().Count : 0;
+
+                            int programados = Programador.OrdenesFabricacion.Count(x => x.Programado);
+                            int list = Programador.OrdenesFabricacion.Where(x => x.Seleccionado && x.Programado == false).ToList().Count;
+                            int ordenSeleccion = oCheck.Checked ? cont + programados : 0;
+
+                            Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
+
+                            //actualización
+                            if (oCheck.Checked)
+                            {
+                                if (programadoSel == "N")
+                                    oMatOrdenes.Columns.Item("SelOrder").Cells.Item(i).Specific.Value = ordenSeleccion.ToString();
+                                oMatOrdenes.SelectRow(i, true, true);
+
+                            }
+                            else
+                            {
+                                if (!Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().ProgramadoEnSAP)
+                                {
+                                    Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().Programado = false;
+                                    oMatOrdenes.Columns.Item("ProgDate").Cells.Item(i).Specific.Value = string.Empty;
+                                    oMatOrdenes.Columns.Item("Col_0").Cells.Item(i).Specific.Value = string.Empty;
+                                    oMatOrdenes.Columns.Item("StartTime").Cells.Item(i).Specific.Value = "00:00";
+                                    oMatOrdenes.Columns.Item("FinishTime").Cells.Item(i).Specific.Value = "00:00";
+                                }
+
+                                int ordenDesmarcado = Convert.ToInt32(oMatOrdenes.Columns.Item("SelOrder").Cells.Item(i).Specific.Value);
+                                ActualizarOrden(ref oMatOrdenes, ordenDesmarcado);
+
+                                if (programadoSel == "N")
+                                    oMatOrdenes.Columns.Item("SelOrder").Cells.Item(i).Specific.Value = ordenSeleccion.ToString();
+
+                                oMatOrdenes.SelectRow(i, false, true);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            cont++;
+                            //oForm.Freeze(false);
+                        }
+
+                    }
+
+
+                }
+            }
+            catch (Exception ex2)
+            {
+                logger.Error(ex2.Message, ex2);
+            }
+            finally
+            {
+                oForm.Freeze(false);
+
+            }
+           
+
         }
 
         private void FormLoad(ref SAPbouiCOM.ItemEvent pVal)
@@ -301,6 +422,11 @@ namespace Reportes.Events.ItemEvent
                             AccionClickEnCheck2(pVal.Row);
                         }
 
+                        if (!pVal.BeforeAction)
+                        {
+                            ValidateChecks(ref pVal);
+                        }
+
                         break;
                 }
 
@@ -506,7 +632,7 @@ namespace Reportes.Events.ItemEvent
         {
             Matrix oMatOrdenes = oForm.Items.Item("matOrders").Specific;
             BuscarSelecciones(ref oMatOrdenes, out int seleccionados);
-           if (seleccionados == 0)
+            if (seleccionados == 0)
             {
                 ClsMain.MensajeError("Debe seleccionar un recurso que esté marcado con check");
                 return;
@@ -2061,8 +2187,8 @@ namespace Reportes.Events.ItemEvent
                         bool isLast = ubicacionNueva == selecciones.Count;
                         var RefRegister = Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == int.Parse(UbicacionIngresada) + (isLast ? -1 : 0)).FirstOrDefault();
 
-                        if(FechaReprog == DateTime.MinValue) FechaReprog = DateTime.ParseExact((isLast ? RefRegister.FechaFin : RefRegister.FechaInicio), "yyyyMMdd", null);
-                        if(string.IsNullOrEmpty(HoraReprog)) HoraReprog = (isLast ? RefRegister.HoraFin : RefRegister.HoraInicio);
+                        if (FechaReprog == DateTime.MinValue) FechaReprog = DateTime.ParseExact((isLast ? RefRegister.FechaFin : RefRegister.FechaInicio), "yyyyMMdd", null);
+                        if (string.IsNullOrEmpty(HoraReprog)) HoraReprog = (isLast ? RefRegister.HoraFin : RefRegister.HoraInicio);
                         nuevaseleccion.Add(lineaseleccionada, ubicacionNueva);
                         if (ubicacionNueva < actual)
                         {
@@ -2156,9 +2282,9 @@ namespace Reportes.Events.ItemEvent
 
             try
             {
-                for(int selected = oMatOrdenes.RowCount; selected >= 1; selected--)
+                for (int selected = oMatOrdenes.RowCount; selected >= 1; selected--)
                 {
-                    if(oMatOrdenes.IsRowSelected(selected))
+                    if (oMatOrdenes.IsRowSelected(selected))
                     {
 
                         oMatOrdenes.Columns.Item("Col_1").Cells.Item(selected).Specific.Value = NewMaquinaCode;
@@ -2168,7 +2294,7 @@ namespace Reportes.Events.ItemEvent
                         {
 
                             UbicacionIngresada = oMatOrdenes.Columns.Item("SelOrder").Cells.Item(selected).Specific.Value;
-                            
+
                             int.TryParse(UbicacionIngresada, out int ubicacionNueva);
                             if (ubicacionNueva > selecciones.Count)
                             {
@@ -2201,7 +2327,7 @@ namespace Reportes.Events.ItemEvent
                                 {
                                     if (seleccionado.Value > actual)
                                     {
-                                        nuevaseleccion.Add(seleccionado.Key, seleccionado.Value -1);
+                                        nuevaseleccion.Add(seleccionado.Key, seleccionado.Value - 1);
                                     }
 
                                 }
@@ -2226,7 +2352,7 @@ namespace Reportes.Events.ItemEvent
                 MostrarOrdenes();
                 //int lineaseleccionada = oMatOrdenes.GetNextSelectedRow();
 
-              
+
 
 
             }
@@ -2537,19 +2663,19 @@ namespace Reportes.Events.ItemEvent
 
                 //int ordenSeleccion = oCheck.Checked ? Programador.OrdenesFabricacion.Where(x => x.Seleccionado).ToList().Count : 0;
 
-                int programados = Programador.OrdenesFabricacion.Count(x=>x.Programado);
-                int list = Programador.OrdenesFabricacion.Where(x => x.Seleccionado && x.Programado==false).ToList().Count;
-                int ordenSeleccion = oCheck.Checked ? list +programados : 0;
+                int programados = Programador.OrdenesFabricacion.Count(x => x.Programado);
+                int list = Programador.OrdenesFabricacion.Where(x => x.Seleccionado && x.Programado == false).ToList().Count;
+                int ordenSeleccion = oCheck.Checked ? list + programados : 0;
 
                 Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
-               
+
                 //actualización
                 if (oCheck.Checked)
                 {
                     if (programadoSel == "N")
                         oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
                     oMatOrdenes.SelectRow(fila, true, true);
-                
+
                 }
                 else
                 {
