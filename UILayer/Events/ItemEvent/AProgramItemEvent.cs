@@ -2185,7 +2185,25 @@ namespace Reportes.Events.ItemEvent
 
                         bool disminuir = false;
                         bool isLast = ubicacionNueva == selecciones.Count;
+
                         var RefRegister = Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == int.Parse(UbicacionIngresada) + (isLast ? -1 : 0)).FirstOrDefault();
+                        if(RefRegister == null)
+                        {
+                            RefRegister = new OrdenFabricacion();
+
+                            RefRegister.FechaInicio= ((EditText)oForm.Items.Item("txtFProg").Specific).Value;
+                            RefRegister.FechaFin = ((EditText)oForm.Items.Item("txtFProg").Specific).Value;
+                            RefRegister.HoraInicio = ((EditText)oForm.Items.Item("Item_11").Specific).Value;
+                            RefRegister.HoraFin = ((EditText)oForm.Items.Item("Item_11").Specific).Value;
+
+                            string timeString = RefRegister.HoraInicio;
+                            string timeFormatted = timeString.Insert(2, ":");
+                            RefRegister.HoraInicio = timeFormatted;
+                            timeString = RefRegister.HoraFin;
+                            timeFormatted = timeString.Insert(2, ":");
+                            RefRegister.HoraFin = timeFormatted;
+
+                        }
 
                         if (FechaReprog == DateTime.MinValue) FechaReprog = DateTime.ParseExact((isLast ? RefRegister.FechaFin : RefRegister.FechaInicio), "yyyyMMdd", null);
                         if (string.IsNullOrEmpty(HoraReprog)) HoraReprog = (isLast ? RefRegister.HoraFin : RefRegister.HoraInicio);

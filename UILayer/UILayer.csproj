@@ -152,6 +152,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\SP\EXX_ValidarStage.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\extrusion_reporte.rpt" />
     <None Include="Resources\UP.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -162,11 +165,21 @@
     <None Include="Resources\DOWN.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Forms\frmAsignar.srf" />
-    <Content Include="Forms\frmCambio.srf" />
-    <Content Include="Forms\frmImpresion.srf" />
-    <Content Include="Forms\frmMaqxKg.srf" />
-    <Content Include="Forms\frmProgram.srf" />
+    <Content Include="Forms\frmAsignar.srf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Forms\frmCambio.srf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Forms\frmImpresion.srf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Forms\frmMaqxKg.srf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Forms\frmProgram.srf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\SAPdata.dll" />
   </ItemGroup>
   <ItemGroup>

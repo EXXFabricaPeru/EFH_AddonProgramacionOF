@@ -1,0 +1,14 @@
+ALTER PROCEDURE "EXX_ValidarStage"
+	(IN DOCENTRY INT,
+	IN SEQNUM INT)
+AS
+BEGIN
+	--SELECT COUNT(0) FROM WOR1 WHERE "DocEntry" = DOCENTRY AND "StageId" < SEQNUM AND "U_EXC_Programado"='N' AND "ItemType"=290;
+	SELECT COUNT(0) FROM WOR1 W1
+	INNER JOIN "OWOR" W ON W."DocEntry"=W1."DocEntry"
+	INNER JOIN "OITM" I ON I."ItemCode"=W."ItemCode"
+	WHERE W1."DocEntry" = 270 AND W1."StageId" < 2 AND W1."U_EXC_Programado"='N' AND W1."ItemType"=290
+	AND IFNULL(I."U_EXP_TIPPROD",0)<>2;
+END;
+
+
