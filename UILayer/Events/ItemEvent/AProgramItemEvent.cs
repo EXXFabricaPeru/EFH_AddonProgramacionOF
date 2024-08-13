@@ -28,7 +28,7 @@ namespace Reportes.Events.ItemEvent
         public ProgramadorOrdenes Programador { get; set; }
         Dictionary<int, int> selecciones = new Dictionary<int, int>();
         string docNumAux;
-
+        bool valid = true;
         public AProgramItemEvent()
         {
             Programador = new ProgramadorOrdenes();
@@ -336,6 +336,10 @@ namespace Reportes.Events.ItemEvent
                         if (!pVal.BeforeAction && !pVal.InnerEvent)
                         { CambiarMaquinaSeleccion(ref pVal); }//CambiarMaquina
                         break;
+                    case "btnAsig":
+                        if (!pVal.BeforeAction && !pVal.InnerEvent)
+                        { AsignarMaquinaSeleccion(ref pVal); }//AsignarMaquina
+                        break;
                     case "btnTemp":
                         if (!pVal.BeforeAction && !pVal.InnerEvent)
                         { CambiarTiempoSeleccion(ref pVal); }//Tiempo
@@ -422,7 +426,7 @@ namespace Reportes.Events.ItemEvent
                             AccionClickEnCheck2(pVal.Row);
                         }
 
-                        if (!pVal.BeforeAction)
+                        if (!pVal.BeforeAction && valid)
                         {
                             ValidateChecks(ref pVal);
                         }
@@ -631,10 +635,10 @@ namespace Reportes.Events.ItemEvent
         void CambiarMaquinaSeleccion(ref SAPbouiCOM.ItemEvent pVal)
         {
             Matrix oMatOrdenes = oForm.Items.Item("matOrders").Specific;
-            BuscarSelecciones(ref oMatOrdenes, out int seleccionados);
+            BuscarSelecciones(ref oMatOrdenes, out int seleccionados,true);
             if (seleccionados == 0)
             {
-                ClsMain.MensajeError("Debe seleccionar un recurso que esté marcado con check");
+                ClsMain.MensajeError("Debe seleccionar recursos que esté marcado con check y previamente programados");
                 return;
             }
             NewMaquinaCode = "";
@@ -649,6 +653,29 @@ namespace Reportes.Events.ItemEvent
             //    ClsMain.MensajeWarning("No ingresó cambio de maquina");
             //}
         }
+
+        void AsignarMaquinaSeleccion(ref SAPbouiCOM.ItemEvent pVal)
+        {
+            Matrix oMatOrdenes = oForm.Items.Item("matOrders").Specific;
+            BuscarSelecciones(ref oMatOrdenes, out int seleccionados,false,true);
+            if (seleccionados == 0)
+            {
+                ClsMain.MensajeError("Debe seleccionar un recurso que esté marcado con check y no programados");
+                return;
+            }
+            NewMaquinaCode = "";
+            MostrarVentanaCambiarMaquina(oForm);
+
+            //if (!string.IsNullOrEmpty(NewMaquinaCode))
+            //{
+            //    CambiarMaquinaSeleccionado(ref oMatOrdenes);
+            //}
+            //else
+            //{
+            //    ClsMain.MensajeWarning("No ingresó cambio de maquina");
+            //}
+        }
+
         void CambiarTiempoSeleccion(ref SAPbouiCOM.ItemEvent pVal)
         {
             Matrix oMatOrdenes = oForm.Items.Item("matOrders").Specific;
@@ -927,6 +954,7 @@ namespace Reportes.Events.ItemEvent
                                 }
                             }
                         }
+                        valid = false;
                         sorted = nuevaseleccion.OrderBy(x => x.Value);
                         QuitarCheck(ref oMatOrdenes, nuevaseleccion);
                         System.Threading.Thread.Sleep(500);
@@ -939,10 +967,10 @@ namespace Reportes.Events.ItemEvent
                             if (disminuir && seleccionado.Value < ubicacionNueva) continue;
                             if (!disminuir && seleccionado.Value > ubicacionNueva) continue;
 
-                            Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == seleccionado.Value).FirstOrDefault().DtFechaInicio = DateTime.MinValue;
-                            Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == seleccionado.Value).FirstOrDefault().DtFechaFin = DateTime.MinValue;
-                            Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == seleccionado.Value).FirstOrDefault().HoraFin = "";
-                            Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == seleccionado.Value).FirstOrDefault().HoraInicio = "";
+                            Programador.OrdenesFabricacion.Where(x => x.IndiceEnMatrix == seleccionado.Key).FirstOrDefault().DtFechaInicio = DateTime.MinValue;
+                            Programador.OrdenesFabricacion.Where(x => x.IndiceEnMatrix == seleccionado.Key).FirstOrDefault().DtFechaFin = DateTime.MinValue;
+                            Programador.OrdenesFabricacion.Where(x => x.IndiceEnMatrix == seleccionado.Key).FirstOrDefault().HoraFin = "";
+                            Programador.OrdenesFabricacion.Where(x => x.IndiceEnMatrix == seleccionado.Key).FirstOrDefault().HoraInicio = "";
 
                             oMatOrdenes.Columns.Item("ProgDate").Cells.Item(seleccionado.Key).Specific.Value = string.Empty;
                             oMatOrdenes.Columns.Item("Col_0").Cells.Item(seleccionado.Key).Specific.Value = string.Empty;
@@ -950,6 +978,7 @@ namespace Reportes.Events.ItemEvent
                             oMatOrdenes.Columns.Item("FinishTime").Cells.Item(seleccionado.Key).Specific.Value = "00:00";
                             AccionClickEnCheck(seleccionado.Key);
                         }
+                        valid = true;
                         PrevisualizarPorSeleccion();
                     }
                 }
@@ -2239,11 +2268,13 @@ namespace Reportes.Events.ItemEvent
                                 }
                             }
                         }
+                        valid = false;
                         sorted = nuevaseleccion.OrderBy(x => x.Value);
                         QuitarCheck(ref oMatOrdenes, nuevaseleccion);
                         System.Threading.Thread.Sleep(500);
                         foreach (KeyValuePair<int, int> seleccionado in sorted)
                         {
+
                             CheckBox oCheck = oMatOrdenes.Columns.Item("check").Cells.Item(seleccionado.Key).Specific;
                             oCheck.Checked = true;
                             ComboBox oCombo = oMatOrdenes.Columns.Item("Scheduled").Cells.Item(seleccionado.Key).Specific;
@@ -2259,6 +2290,7 @@ namespace Reportes.Events.ItemEvent
                             oCombo.Select(Pro, BoSearchKey.psk_ByValue);
 
                         }
+                        valid = true;
                         Reprogramador(ref oMatOrdenes);
                     }
                 }
