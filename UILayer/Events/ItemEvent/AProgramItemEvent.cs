@@ -2286,8 +2286,8 @@ namespace Reportes.Events.ItemEvent
                             if (!disminuir && seleccionado.Value > ubicacionNueva) continue;
                             AccionClickEnCheck(seleccionado.Key);
 
-                            //cambio lushianna
-                            oCombo.Select(Pro, BoSearchKey.psk_ByValue);
+                            //cambio lushianna si estuvo funcionando pero ahora los valors se alteran
+                            //oCombo.Select(Pro, BoSearchKey.psk_ByValue);
 
                         }
                         valid = true;
