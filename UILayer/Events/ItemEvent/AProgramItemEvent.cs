@@ -2244,6 +2244,10 @@ namespace Reportes.Events.ItemEvent
                         System.Threading.Thread.Sleep(500);
                         foreach (KeyValuePair<int, int> seleccionado in sorted)
                         {
+                            //para visualizar el campo ordenmarcacion
+                            List<OrdenFabricacion> ordenesSeleccionadas = Programador.OrdenesFabricacion.ToList();
+                            //en la segunda vuelta se borra lo anterior
+
                             CheckBox oCheck = oMatOrdenes.Columns.Item("check").Cells.Item(seleccionado.Key).Specific;
                             oCheck.Checked = true;
                             ComboBox oCombo = oMatOrdenes.Columns.Item("Scheduled").Cells.Item(seleccionado.Key).Specific;
@@ -2255,8 +2259,8 @@ namespace Reportes.Events.ItemEvent
                             if (!disminuir && seleccionado.Value > ubicacionNueva) continue;
                             AccionClickEnCheck(seleccionado.Key);
 
-                            //cambio lushianna
-                            oCombo.Select(Pro, BoSearchKey.psk_ByValue);
+                            //cambio lushianna si estuvo funcionando pero ahora los valors se alteran
+                            //oCombo.Select(Pro, BoSearchKey.psk_ByValue);
 
                         }
                         Reprogramador(ref oMatOrdenes);
