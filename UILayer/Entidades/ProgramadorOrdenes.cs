@@ -38,10 +38,10 @@ namespace Reportes.Entidades
                                       {
                                           IndiceEnMatrix = indiceMatrix++,
                                           Programado = q.Element("Scheduled").Value == "Y",
-                                          StandBy =  (string.IsNullOrEmpty(q.Element("Standby").Value) ? "N": q.Element("Standby").Value) == "Y",
+                                          StandBy =  (string.IsNullOrEmpty(q.Element("Standby").Value) || q.Element("Terminado").Value == "N" ? "N": q.Element("Standby").Value ) == "Y",
                                           Parcial = (string.IsNullOrEmpty(q.Element("Parcial").Value) ? "N" : q.Element("Parcial").Value) == "Y",
                                           Anular = (string.IsNullOrEmpty(q.Element("Anulado").Value) ? "N" : q.Element("Anulado").Value) == "Y",
-                                          Terminado = (string.IsNullOrEmpty(q.Element("Terminado").Value) ? "N" : q.Element("Terminado").Value) == "Y",
+                                          Terminado = (string.IsNullOrEmpty(q.Element("Terminado").Value) || q.Element("Terminado").Value == "N" ? "N" : q.Element("Terminado").Value) == "Y",
                                           ProgramadoEnSAP = q.Element("Scheduled").Value == "Y",
                                           Seleccionado = q.Element("Check").Value == "Y",
                                           OrdenMarcacion = int.Parse(q.Element("SelOrder").Value),
@@ -131,6 +131,7 @@ namespace Reportes.Entidades
                 if (orden.Programado && noLineaRP == -1) continue;
                 if (orden.OrdenMarcacion < noLineaRP) continue;
                 TimePeriodCollection huecos = EncontrarHuecosEnRangos(fechaInicio, noLineaRP);
+
                 ////noLineaRP++;
                 //if (!orden.Programado)
                 //{
@@ -177,13 +178,18 @@ namespace Reportes.Entidades
                     logger.Debug($"CantidadHoras programado {orden.CantidadHoras}");
                     TimeSpan cantidadHoras = TimeSpan.ParseExact(orden.CantidadHoras, "hh\\:mm\\:ss", null);
 
-                    if (orden.DtFechaInicio.TimeOfDay < horaInicioActividades)
-                        orden.DtFechaInicio = orden.DtFechaInicio.Date.Add(horaInicioActividades);
+                    //if (orden.DtFechaInicio.TimeOfDay < horaInicioActividades)
+                    //    orden.DtFechaInicio = orden.DtFechaInicio.Date.Add(horaInicioActividades);
 
                     orden.DtFechaFin = orden.DtFechaInicio.Add(cantidadHoras);
                     orden.FechaInicio = orden.DtFechaInicio.ToString("yyyyMMdd");
                     orden.FechaFin = orden.DtFechaFin.ToString("yyyyMMdd");
                     orden.Programado = true;
+                    //cambio lushianna 
+                    orden.StandBy = false;
+                    orden.Terminado = false;
+                    orden.Anular = false;
+                    orden.Parcial = false;
                 }
                 //}
             }

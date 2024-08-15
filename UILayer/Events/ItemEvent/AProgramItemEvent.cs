@@ -428,7 +428,7 @@ namespace Reportes.Events.ItemEvent
 
                         if (!pVal.BeforeAction && valid)
                         {
-                            ValidateChecks(ref pVal);
+                            //ValidateChecks(ref pVal);
                         }
 
                         break;
@@ -2053,9 +2053,9 @@ namespace Reportes.Events.ItemEvent
             oMatOrdenes.Columns.Item("Col_2").Visible = false;
 
             LimpiarMatrix(ref oMatOrdenes);
-            if (oDTorders.Columns.Count > 28)
+            if (oDTorders.Columns.Count > 29)
             {
-                for (int i = 28; i < oDTorders.Columns.Count; i++)
+                for (int i = 29; i < oDTorders.Columns.Count; i++)
                 {
                     string coldt = oDTorders.Columns.Item(i).Name;
                     Column oNewCol = oMatOrdenes.Columns.Add(NombreCol(coldt), BoFormItemTypes.it_EDIT);
@@ -2081,9 +2081,9 @@ namespace Reportes.Events.ItemEvent
                 oMatOrdenes.DeleteRow(1);
             }
             int colcount = oMatOrdenes.Columns.Count;
-            for (int i = 23; i < colcount; i++)
+            for (int i = 24; i < colcount; i++)
             {
-                oMatOrdenes.Columns.Remove(23);
+                oMatOrdenes.Columns.Remove(24);
             }
         }
 
@@ -2337,9 +2337,7 @@ namespace Reportes.Events.ItemEvent
                     if (oMatOrdenes.IsRowSelected(selected))
                     {
 
-                        oMatOrdenes.Columns.Item("Col_1").Cells.Item(selected).Specific.Value = NewMaquinaCode;
-                        oMatOrdenes.Columns.Item("Resource").Cells.Item(selected).Specific.Value = NewMaquinaDesc;
-                        Programador.ChangeProgramadorVal(selected, NewMaquinaCode);
+                  
                         if (oMatOrdenes.Columns.Item("Scheduled").Cells.Item(selected).Specific.Value == "Y")
                         {
 
@@ -2352,6 +2350,8 @@ namespace Reportes.Events.ItemEvent
                             }
                             else
                             {
+                                valid = false;
+
                                 int lineaseleccionada = Convert.ToInt32(selected);
                                 int actual = selecciones[lineaseleccionada];
                                 var sorted = selecciones.OrderBy(x => x.Value);
@@ -2362,16 +2362,18 @@ namespace Reportes.Events.ItemEvent
                                 var RefRegister = Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == int.Parse(UbicacionIngresada)).FirstOrDefault();
                                 FechaReprog = DateTime.ParseExact(RefRegister.FechaInicio, "yyyyMMdd", null);
                                 HoraReprog = RefRegister.HoraInicio;
+
                                 oMatOrdenes.Columns.Item("check").Cells.Item(lineaseleccionada).Specific.Checked = false;
                                 oMatOrdenes.Columns.Item("Scheduled").Cells.Item(lineaseleccionada).Specific.Select("N", BoSearchKey.psk_ByValue);
                                 oMatOrdenes.Columns.Item("ProgDate").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
-                                oMatOrdenes.Columns.Item("programdat").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
                                 oMatOrdenes.Columns.Item("Col_0").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
                                 oMatOrdenes.Columns.Item("StartTime").Cells.Item(lineaseleccionada).Specific.Value = "00:00";
                                 oMatOrdenes.Columns.Item("FinishTime").Cells.Item(lineaseleccionada).Specific.Value = "00:00";
-
-                                AccionClickEnCheck(lineaseleccionada);
+                                oMatOrdenes.Columns.Item("Col_1").Cells.Item(selected).Specific.Value = NewMaquinaCode;
+                                oMatOrdenes.Columns.Item("Resource").Cells.Item(selected).Specific.Value = NewMaquinaDesc;
+                                //AccionClickEnCheck(lineaseleccionada);
                                 Programador.ClearProgramadorVal(lineaseleccionada);
+                                Programador.ChangeProgramadorVal(selected, NewMaquinaCode);
 
                                 foreach (KeyValuePair<int, int> seleccionado in sorted)
                                 {
@@ -2381,21 +2383,15 @@ namespace Reportes.Events.ItemEvent
                                     }
 
                                 }
-
-                                sorted = nuevaseleccion.OrderBy(x => x.Value);
-                                QuitarCheck(ref oMatOrdenes, nuevaseleccion);
-                                System.Threading.Thread.Sleep(500);
-                                foreach (KeyValuePair<int, int> seleccionado in sorted)
-                                {
-                                    oMatOrdenes.Columns.Item("check").Cells.Item(seleccionado.Key).Specific.Checked = true;
-                                    oMatOrdenes.Columns.Item("Scheduled").Cells.Item(seleccionado.Key).Specific.Select("Y", BoSearchKey.psk_ByValue);
-                                    //if (disminuir && seleccionado.Value < ubicacionNueva) continue;
-                                    //if (!disminuir && seleccionado.Value > ubicacionNueva) continue;
-                                    AccionClickEnCheck(seleccionado.Key);
-
-                                }
+                                //}
+                                valid = true;
                                 Reprogramador(ref oMatOrdenes);
                             }
+                        }
+                        else
+                        {
+                            Programador.ClearProgramadorVal(selected);
+                            Programador.ChangeProgramadorVal(selected, NewMaquinaCode);
                         }
                     }
                 }
