@@ -2487,7 +2487,7 @@ namespace Reportes.Events.ItemEvent
                 oMatOrdenes.Columns.Item("check").Cells.Item(lineaseleccionada).Specific.Checked = false;
                 oMatOrdenes.Columns.Item("Scheduled").Cells.Item(lineaseleccionada).Specific.Select("N", BoSearchKey.psk_ByValue);
                 oMatOrdenes.Columns.Item("ProgDate").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
-                oMatOrdenes.Columns.Item("programdat").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
+                //oMatOrdenes.Columns.Item("programdat").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
                 oMatOrdenes.Columns.Item("Col_0").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
                 oMatOrdenes.Columns.Item("StartTime").Cells.Item(lineaseleccionada).Specific.Value = "00:00";
                 oMatOrdenes.Columns.Item("FinishTime").Cells.Item(lineaseleccionada).Specific.Value = "00:00";
