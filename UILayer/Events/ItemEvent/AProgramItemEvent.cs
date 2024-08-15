@@ -70,8 +70,8 @@ namespace Reportes.Events.ItemEvent
                         MatrixLinkPressed(ref pVal, out BubbleEvent);
                         break;
                     case BoEventTypes.et_FORM_CLOSE:
-                        break;
-                    
+                        break;                    
+
 
                 }
             }
