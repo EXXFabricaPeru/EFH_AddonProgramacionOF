@@ -71,7 +71,7 @@ namespace Reportes.Events.ItemEvent
                         break;
                     case BoEventTypes.et_FORM_CLOSE:
                         break;
-
+                    
 
                 }
             }
