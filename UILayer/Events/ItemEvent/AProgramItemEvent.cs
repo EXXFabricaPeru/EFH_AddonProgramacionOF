@@ -70,7 +70,7 @@ namespace Reportes.Events.ItemEvent
                         MatrixLinkPressed(ref pVal, out BubbleEvent);
                         break;
                     case BoEventTypes.et_FORM_CLOSE:
-                        break;
+                        break;                    
 
 
                 }
@@ -2679,6 +2679,20 @@ namespace Reportes.Events.ItemEvent
 
             int rpta = ClsMain.oApplication.MessageBox(msg, 1, "Si", "No", "");
             if (rpta != 1) return;
+
+            for (int i = 1; i <= oMatOrdenes.RowCount; i++)
+            {
+                CheckBox line = oMatOrdenes.Columns.Item("check").Cells.Item(i).Specific;
+
+                if (line.Checked)
+                {
+                    Programador.OrdenesFabricacion.Where(t => t.IndiceEnMatrix == i).FirstOrDefault().Seleccionado = true;
+                }
+                else
+                {
+                    Programador.OrdenesFabricacion.Where(t => t.IndiceEnMatrix == i).FirstOrDefault().Seleccionado = false;
+                }
+            }
 
             Programador.LimpiarProgramaciones(out int procesados, out List<string> Errores, validacionEtapas == "Y");
 
