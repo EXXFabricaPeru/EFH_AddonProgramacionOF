@@ -178,8 +178,8 @@ namespace Reportes.Entidades
                     logger.Debug($"CantidadHoras programado {orden.CantidadHoras}");
                     TimeSpan cantidadHoras = TimeSpan.ParseExact(orden.CantidadHoras, "hh\\:mm\\:ss", null);
 
-                    //if (orden.DtFechaInicio.TimeOfDay < horaInicioActividades)
-                    //    orden.DtFechaInicio = orden.DtFechaInicio.Date.Add(horaInicioActividades);
+                    if (orden.DtFechaInicio.TimeOfDay < horaInicioActividades)
+                        orden.DtFechaInicio = orden.DtFechaInicio.Date.Add(horaInicioActividades);
 
                     orden.DtFechaFin = orden.DtFechaInicio.Add(cantidadHoras);
                     orden.FechaInicio = orden.DtFechaInicio.ToString("yyyyMMdd");

@@ -897,12 +897,40 @@ namespace Reportes.Events.ItemEvent
                     {
                         int lineaseleccionada = oMatOrdenes.GetNextSelectedRow();
                         int actual = selecciones[lineaseleccionada];
-
+                        bool isLast = ubicacionNueva == selecciones.Count;
+                        int menor = 0;
                         if (actual == ubicacionNueva)
                         {
                             ClsMain.MensajeError("La ubicación ingresada debe ser diferente a la actual");
                             return;
                         }
+                        if (actual < ubicacionNueva) menor = actual;
+                        else menor = ubicacionNueva;
+
+
+                        var RefRegister = Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == menor + (isLast ? -1 : 0)).FirstOrDefault();
+                        if (RefRegister == null)
+                        {
+                            RefRegister = new OrdenFabricacion();
+
+                            RefRegister.FechaInicio = ((EditText)oForm.Items.Item("txtFProg").Specific).Value;
+                            RefRegister.FechaFin = ((EditText)oForm.Items.Item("txtFProg").Specific).Value;
+                            RefRegister.HoraInicio = ((EditText)oForm.Items.Item("Item_11").Specific).Value;
+                            RefRegister.HoraFin = ((EditText)oForm.Items.Item("Item_11").Specific).Value;
+
+                            string timeString = RefRegister.HoraInicio;
+                            string timeFormatted = timeString.Insert(2, ":");
+                            RefRegister.HoraInicio = timeFormatted;
+                            timeString = RefRegister.HoraFin;
+                            timeFormatted = timeString.Insert(2, ":");
+                            RefRegister.HoraFin = timeFormatted;
+
+                        }
+
+                        if (FechaReprog == DateTime.MinValue) FechaReprog = DateTime.ParseExact((isLast ? RefRegister.FechaFin : RefRegister.FechaInicio), "yyyyMMdd", null);
+                        if (string.IsNullOrEmpty(HoraReprog)) HoraReprog = (isLast ? RefRegister.HoraFin : RefRegister.HoraInicio);
+
+
                         var sorted = selecciones.OrderBy(x => x.Value);
 
                         Dictionary<int, int> nuevaseleccion = new Dictionary<int, int>();
@@ -979,7 +1007,10 @@ namespace Reportes.Events.ItemEvent
                             AccionClickEnCheck(seleccionado.Key);
                         }
                         valid = true;
-                        PrevisualizarPorSeleccion();
+                        UbicacionIngresada = menor.ToString();
+                        Reprogramador(ref oMatOrdenes);
+
+                        //PrevisualizarPorSeleccion();
                     }
                 }
                 else
@@ -2287,7 +2318,7 @@ namespace Reportes.Events.ItemEvent
                             AccionClickEnCheck(seleccionado.Key);
 
                             //cambio lushianna si estuvo funcionando pero ahora los valors se alteran
-                            //oCombo.Select(Pro, BoSearchKey.psk_ByValue);
+                            oCombo.Select(Pro, BoSearchKey.psk_ByValue);
 
                         }
                         valid = true;
