@@ -625,6 +625,7 @@ namespace Reportes.Events.ItemEvent
             MostrarVentanaProgramar();
             if (!string.IsNullOrEmpty(UbicacionIngresada))
             {
+                HoraReprog = "";
                 ProgramarSeleccionado(ref oMatOrdenes);
             }
             else
@@ -2240,7 +2241,6 @@ namespace Reportes.Events.ItemEvent
                         int lineaseleccionada = oMatOrdenes.GetNextSelectedRow();
                         int actual = selecciones[lineaseleccionada];
                         var sorted = selecciones.OrderBy(x => x.Value);
-
                         Dictionary<int, int> nuevaseleccion = new Dictionary<int, int>();
 
                         bool disminuir = false;
@@ -2346,6 +2346,7 @@ namespace Reportes.Events.ItemEvent
             try
             {
                 DesasignarRegistro(ref oMatOrdenes, standBy: true);
+
             }
             catch (Exception ex)
             {
@@ -2528,6 +2529,7 @@ namespace Reportes.Events.ItemEvent
                 if (otro) oMatOrdenes.Columns.Item("anulado").Cells.Item(lineaseleccionada).Specific.Value = "Y";//Important
 
                 AccionClickEnCheck(lineaseleccionada);
+
                 Programador.ClearProgramadorVal(lineaseleccionada, standBy, parcial, terminado, otro);
 
                 if (ubicacionNueva < actual)
@@ -2561,6 +2563,7 @@ namespace Reportes.Events.ItemEvent
                         }
                     }
                 }
+                valid=false;
                 sorted = nuevaseleccion.OrderBy(x => x.Value);
                 QuitarCheck(ref oMatOrdenes, nuevaseleccion);
                 System.Threading.Thread.Sleep(500);
@@ -2573,6 +2576,8 @@ namespace Reportes.Events.ItemEvent
                     AccionClickEnCheck(seleccionado.Key);
                 }
                 Reprogramador(ref oMatOrdenes);
+                valid = true;
+
             }
         }
 
