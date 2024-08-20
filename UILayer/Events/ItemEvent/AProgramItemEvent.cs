@@ -2514,8 +2514,10 @@ namespace Reportes.Events.ItemEvent
                 //bool isLast = ubicacionNueva == selecciones.Count;
                 //bool isFirst = ubicacionNueva == 1;
                 var RefRegister = Programador.OrdenesFabricacion.Where(x => x.OrdenMarcacion == int.Parse(UbicacionIngresada)).FirstOrDefault();
+                
                 FechaReprog = DateTime.ParseExact(RefRegister.FechaInicio, "yyyyMMdd", null);
                 HoraReprog = RefRegister.HoraInicio;
+                
                 oMatOrdenes.Columns.Item("check").Cells.Item(lineaseleccionada).Specific.Checked = false;
                 oMatOrdenes.Columns.Item("Scheduled").Cells.Item(lineaseleccionada).Specific.Select("N", BoSearchKey.psk_ByValue);
                 oMatOrdenes.Columns.Item("ProgDate").Cells.Item(lineaseleccionada).Specific.Value = string.Empty;
@@ -2762,8 +2764,8 @@ namespace Reportes.Events.ItemEvent
                 int programados = Programador.OrdenesFabricacion.Count(x => x.Programado);
                 int list = Programador.OrdenesFabricacion.Where(x => x.Seleccionado && x.Programado == false).ToList().Count;
                 int ordenSeleccion = oCheck.Checked ? list + programados : 0;
-
-                Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
+                if (programadoSel == "N")
+                    Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
 
                 //actualización
                 if (oCheck.Checked)
@@ -2785,10 +2787,13 @@ namespace Reportes.Events.ItemEvent
                     }
 
                     int ordenDesmarcado = Convert.ToInt32(oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value);
-                    ActualizarOrden(ref oMatOrdenes, ordenDesmarcado);
+
 
                     if (programadoSel == "N")
+                    {
+                        ActualizarOrden(ref oMatOrdenes, ordenDesmarcado);
                         oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
+                    }
 
                     oMatOrdenes.SelectRow(fila, false, true);
                 }
