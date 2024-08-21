@@ -152,6 +152,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\SP\SBO_SP_PostTransactionNotice.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SP\SBO_EXP_PTN_OBJ202_OWOR_ADDON.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\SP\EXX_ValidarStage.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
