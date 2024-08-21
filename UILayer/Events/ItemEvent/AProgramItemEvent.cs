@@ -29,6 +29,7 @@ namespace Reportes.Events.ItemEvent
         Dictionary<int, int> selecciones = new Dictionary<int, int>();
         string docNumAux;
         bool valid = true;
+        bool standby = true;
         public AProgramItemEvent()
         {
             Programador = new ProgramadorOrdenes();
@@ -2345,7 +2346,9 @@ namespace Reportes.Events.ItemEvent
             oForm.Freeze(true);
             try
             {
+                standby = false;
                 DesasignarRegistro(ref oMatOrdenes, standBy: true);
+                standby = true;
 
             }
             catch (Exception ex)
@@ -2407,14 +2410,6 @@ namespace Reportes.Events.ItemEvent
                                 Programador.ClearProgramadorVal(lineaseleccionada);
                                 Programador.ChangeProgramadorVal(selected, NewMaquinaCode);
 
-                                foreach (KeyValuePair<int, int> seleccionado in sorted)
-                                {
-                                    if (seleccionado.Value > actual)
-                                    {
-                                        nuevaseleccion.Add(seleccionado.Key, seleccionado.Value - 1);
-                                    }
-
-                                }
                                 //}
                                 valid = true;
                                 Reprogramador(ref oMatOrdenes);
@@ -2764,7 +2759,8 @@ namespace Reportes.Events.ItemEvent
                 int programados = Programador.OrdenesFabricacion.Count(x => x.Programado);
                 int list = Programador.OrdenesFabricacion.Where(x => x.Seleccionado && x.Programado == false).ToList().Count;
                 int ordenSeleccion = oCheck.Checked ? list + programados : 0;
-                if (programadoSel == "N")
+
+                if (standby)
                     Programador.OrdenesFabricacion.Where(x => x.NroOrdenFabricacion == orden && x.Etapa == etapa && x.Recurso == recurso).FirstOrDefault().OrdenMarcacion = ordenSeleccion;
 
                 //actualización
@@ -2788,10 +2784,12 @@ namespace Reportes.Events.ItemEvent
 
                     int ordenDesmarcado = Convert.ToInt32(oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value);
 
+                    if (standby)
+                        ActualizarOrden(ref oMatOrdenes, ordenDesmarcado);
+
 
                     if (programadoSel == "N")
                     {
-                        ActualizarOrden(ref oMatOrdenes, ordenDesmarcado);
                         oMatOrdenes.Columns.Item("SelOrder").Cells.Item(fila).Specific.Value = ordenSeleccion.ToString();
                     }
 
