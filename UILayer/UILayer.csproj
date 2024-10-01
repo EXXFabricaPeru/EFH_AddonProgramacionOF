@@ -152,6 +152,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\SP\EXX_ListaOrdenesProgramacion.sql" />
+    <Content Include="Resources\SP\SBO_EXP_PTN_OBJ202_OWOR.sql" />
     <Content Include="Resources\SP\SBO_SP_PostTransactionNotice.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
